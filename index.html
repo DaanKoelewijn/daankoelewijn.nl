@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daan Koelewijn — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --mint:        #b8e0d2;
+      --mint-light:  #d8f0e8;
+      --mint-pale:   #edf8f3;
+      --mint-deep:   #7ecab0;
+      --brown:       #c8a882;
+      --brown-light: #e8d5be;
+      --brown-pale:  #f5ede0;
+      --brown-deep:  #a07850;
+      --cream:       #faf7f2;
+      --text:        #3a3028;
+      --text-soft:   #7a6a5a;
+      --white:       #ffffff;
+      --shadow:      rgba(160, 120, 80, 0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100; 
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(250, 247, 242, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--brown-light);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 24px var(--shadow); }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--brown-deep);
+      letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1.5px;
+      background: var(--mint-deep);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* ─── HERO ─── */
+    #home {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      gap: 4rem;
+      position: relative;
+    }
+
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .blob-1 { width: 520px; height: 520px; background: var(--mint); top: -100px; right: -80px; }
+    .blob-2 { width: 320px; height: 320px; background: var(--brown-light); bottom: 80px; left: -60px; }
+
+    .hero-text { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--mint-deep);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.25s forwards;
+    }
+    .hero-name span { color: var(--brown-deep); font-style: italic; }
+
+    .hero-tagline {
+      font-size: 1.1rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.4s forwards;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.55s forwards;
+    }
+    .btn {
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-block;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--mint-deep);
+      color: var(--white);
+      border: none;
+      box-shadow: 0 6px 24px rgba(126,202,176,0.4);
+    }
+    .btn-primary:hover { box-shadow: 0 10px 32px rgba(126,202,176,0.5); }
+    .btn-outline {
+      background: transparent;
+      color: var(--brown-deep);
+      border: 1.5px solid var(--brown);
+    }
+    .btn-outline:hover { background: var(--brown-pale); }
+
+    /* Hero avatar area */
+    .hero-visual {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .avatar-ring {
+      width: 380px; height: 380px;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      background: linear-gradient(135deg, var(--mint-light), var(--brown-pale));
+      display: flex; align-items: center; justify-content: center;
+      animation: morph 8s ease-in-out infinite, fadeIn 1s 0.3s forwards;
+      opacity: 0;
+      box-shadow: 0 20px 60px var(--shadow);
+      position: relative;
+    }
+    .avatar-inner {
+      width: 320px; height: 320px;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      background: linear-gradient(135deg, var(--mint-pale), var(--cream));
+      display: flex; align-items: center; justify-content: center;
+      animation: morphInner 8s ease-in-out infinite;
+      font-family: 'Playfair Display', serif;
+      font-size: 7rem;
+    }
+
+    .floating-tag {
+      position: absolute;
+      background: var(--white);
+      border-radius: 12px;
+      padding: 0.6rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid var(--brown-light);
+      animation: float 3s ease-in-out infinite;
+    }
+    .tag-1 { top: 10%; left: -10%; animation-delay: 0s; }
+    .tag-2 { bottom: 15%; right: -8%; animation-delay: 1s; }
+    .tag-3 { top: 50%; right: -12%; animation-delay: 0.5s; }
+    .tag-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    .dot-mint { background: var(--mint-deep); }
+    .dot-brown { background: var(--brown); }
+
+    @keyframes morph {
+      0%,100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+      25%      { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50%      { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+      75%      { border-radius: 60% 40% 50% 60% / 30% 60% 40% 70%; }
+    }
+    @keyframes morphInner {
+      0%,100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+      25%      { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; }
+      50%      { border-radius: 60% 40% 60% 40% / 40% 60% 40% 60%; }
+      75%      { border-radius: 40% 60% 40% 60% / 50% 40% 60% 50%; }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ─── SECTION SHARED ─── */
+    section { padding: 7rem 3rem; max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mint-deep);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 3.5rem;
+    }
+
+    .divider {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--brown-light), transparent);
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .about-sticky { position: sticky; top: 120px; }
+    .about-text {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-soft);
+      margin-bottom: 1.5rem;
+    }
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--brown-light);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 12px var(--shadow);
+      transition: transform 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--brown-deep);
+      margin-bottom: 0.3rem;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-soft); }
+
+    /* ─── LANGUAGES ─── */
+    .lang-pills { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 2rem; }
+    .lang-pill {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--white);
+      border: 1px solid var(--brown-light);
+      border-radius: 50px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .lang-flag {
+      width: 24px;
+      height: 16px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    /* ─── SKILLS ─── */
+    #skills { background: transparent; }
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .skill-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 2.2rem;
+      border: 1px solid var(--mint-light);
+      box-shadow: 0 4px 20px var(--shadow);
+      position: relative; overflow: hidden;
+      cursor: default;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .skill-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(160,120,80,0.18); }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: var(--mint-pale);
+      transition: transform 0.5s;
+    }
+    .skill-card:hover::before { transform: scale(1.5); }
+    .skill-icon { font-size: 2.2rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+    .skill-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+      position: relative; z-index: 1;
+    }
+    .skill-desc { font-size: 0.88rem; color: var(--text-soft); line-height: 1.6; position: relative; z-index: 1; }
+    .skill-bar-wrap {
+      margin-top: 1.2rem;
+      background: var(--mint-pale);
+      border-radius: 50px;
+      height: 6px;
+      overflow: hidden;
+      position: relative; z-index: 1;
+    }
+    .skill-bar {
+      height: 100%;
+      border-radius: 50px;
+      background: linear-gradient(90deg, var(--mint-deep), var(--brown));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── EXPERIENCE TIMELINE ─── */
+    #experience { }
+    .timeline { position: relative; padding-left: 2.5rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 10px; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--mint-deep), var(--brown-light));
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-dot {
+      position: absolute;
+      left: -2.9rem; top: 6px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--mint-deep);
+      border: 3px solid var(--cream);
+      box-shadow: 0 0 0 3px var(--mint-light);
+      z-index: 1;
+    }
+    .timeline-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 1.6rem 2rem;
+      border: 1px solid var(--brown-light);
+      box-shadow: 0 2px 16px var(--shadow);
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .timeline-card:hover { box-shadow: 0 6px 32px var(--shadow); }
+    .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; }
+    .timeline-role {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    .timeline-period {
+      font-size: 0.8rem;
+      background: var(--mint-pale);
+      color: var(--mint-deep);
+      padding: 0.2rem 0.8rem;
+      border-radius: 50px;
+      font-weight: 500;
+    }
+    .timeline-company { font-size: 0.9rem; color: var(--brown-deep); margin-top: 0.2rem; font-weight: 500; }
+    .timeline-expand { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .timeline-expand.open { max-height: 200px; }
+    .timeline-expand p { margin-top: 1rem; font-size: 0.9rem; color: var(--text-soft); line-height: 1.7; border-top: 1px solid var(--brown-light); padding-top: 1rem; }
+    .expand-arrow { font-size: 0.75rem; color: var(--text-soft); margin-top: 0.4rem; display: flex; align-items: center; gap: 0.3rem; }
+
+    /* ─── EDUCATION ─── */
+    #education .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .edu-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid var(--mint-light);
+      box-shadow: 0 2px 16px var(--shadow);
+      transition: transform 0.2s;
+    }
+    .edu-card:hover { transform: translateY(-4px); }
+    .edu-degree {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .edu-school { font-size: 0.88rem; color: var(--brown-deep); font-weight: 500; margin-bottom: 0.2rem; }
+    .edu-period { font-size: 0.8rem; color: var(--text-soft); margin-bottom: 0.8rem; }
+    .edu-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: var(--mint-pale);
+      color: var(--mint-deep);
+      border: 1px solid var(--mint);
+      border-radius: 50px;
+      padding: 0.2rem 0.8rem;
+      font-weight: 500;
+    }
+    .edu-badge.completed { background: linear-gradient(135deg, var(--mint-pale), var(--brown-pale)); color: var(--brown-deep); border-color: var(--brown-light); }
+
+    /* ─── PROJECTS ─── */
+    #projects { }
+    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .project-card {
+      background: var(--white);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid var(--brown-light);
+      box-shadow: 0 4px 24px var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .project-card:hover { transform: translateY(-8px); box-shadow: 0 16px 48px rgba(160,120,80,0.2); }
+    .project-thumb {
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .thumb-pantry { background: linear-gradient(135deg, var(--mint-light), var(--mint-pale)); }
+    .thumb-dm    { background: linear-gradient(135deg, var(--brown-pale), var(--brown-light)); }
+    .project-body { padding: 2rem; }
+    .project-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .project-sub { font-size: 0.85rem; color: var(--mint-deep); font-weight: 500; margin-bottom: 1rem; }
+
+    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .project-tag {
+      font-size: 0.78rem;
+      background: var(--brown-pale);
+      color: var(--brown-deep);
+      border-radius: 50px;
+      padding: 0.25rem 0.8rem;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      text-align: center;
+      background: var(--mint-pale);
+      border-radius: 40px;
+      padding: 6rem 3rem;
+      margin: 4rem auto;
+      border: 1px solid var(--mint);
+      position: relative; overflow: hidden;
+    }
+    #contact::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: var(--brown-pale);
+      opacity: 0.6;
+    }
+    #contact::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: var(--mint-light);
+      opacity: 0.5;
+    }
+    #contact > * { position: relative; z-index: 1; }
+    #contact .section-label { margin-bottom: 0.5rem; }
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .contact-sub { color: var(--text-soft); font-size: 1.05rem; margin-bottom: 2.5rem; }
+    .contact-icons { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+    .contact-btn {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.85rem 1.8rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1.5px solid var(--mint-deep);
+      color: var(--mint-deep);
+      background: var(--white);
+      transition: all 0.2s;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+    .contact-btn:hover { background: var(--mint-deep); color: var(--white); transform: translateY(-2px); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 2rem 3rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      border-top: 1px solid var(--brown-light);
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--mint-deep), var(--brown));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ─── PROJECT MORE HINT ─── */
+    .project-more {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--mint-deep);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: letter-spacing 0.2s;
+    }
+    .project-card:hover .project-more { letter-spacing: 0.1em; }
+
+    /* ─── MODAL ─── */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(58, 48, 40, 0.45);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    #modal-box {
+      background: var(--cream);
+      border-radius: 32px;
+      width: 100%;
+      max-width: 620px;
+      box-shadow: 0 32px 80px rgba(58,48,40,0.25);
+      overflow: hidden;
+      border: 1px solid var(--brown-light);
+      transform: translateY(30px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #modal-overlay.open #modal-box {
+      transform: translateY(0) scale(1);
+    }
+    #modal-thumb {
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+    }
+    .modal-body { padding: 2rem 2.5rem 2.5rem; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .modal-sub {
+      font-size: 0.9rem;
+      color: var(--brown-deep);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+    }
+    .modal-desc {
+      font-size: 1rem;
+      color: var(--text-soft);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--mint) transparent;
+    }
+    .modal-desc::-webkit-scrollbar { width: 5px; }
+    .modal-desc::-webkit-scrollbar-track { background: transparent; }
+    .modal-desc::-webkit-scrollbar-thumb { background: var(--mint); border-radius: 50px; }
+    .modal-close {
+      position: absolute;
+      top: 1.2rem; right: 1.5rem;
+      background: var(--white);
+      border: 1px solid var(--brown-light);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--text-soft);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+    }
+    .modal-close:hover { background: var(--brown-pale); color: var(--text); }
+    #modal-box { position: relative; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      #home { grid-template-columns: 1fr; padding-top: 7rem; text-align: center; }
+      .hero-visual { margin-top: 3rem; }
+      .avatar-ring { width: 280px; height: 280px; }
+      .avatar-inner { width: 240px; height: 240px; font-size: 5rem; }
+      .tag-1 { top: -5%; left: 0; }
+      .tag-2 { bottom: -5%; right: 0; }
+      .tag-3 { display: none; }
+      #about { grid-template-columns: 1fr; }
+      .about-sticky { position: static; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      section { padding: 5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress bar -->
+  <div class="progress-bar" id="progress"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo">DK</div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">Over mij</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Ervaring</a></li>
+      <li><a href="#education">Opleiding</a></li>
+      <li><a href="#projects">Projecten</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div id="home" style="max-width:1200px;margin:0 auto;">
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+
+    <div class="hero-text">
+      <p class="hero-eyebrow">Portfolio 2026</p>
+      <h1 class="hero-name">Daan<br /><span>Koelewijn</span></h1>
+      <p class="hero-tagline">
+        IT-student, frontend ontwikkelaar & AI-enthousiast.
+        Ik verbind technologie met creativiteit — van slimme koelkasten
+        tot digitale platforms.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">Bekijk projecten</a>
+        <a href="#contact" class="btn btn-outline">Neem contact op</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="avatar-ring">
+        <div class="avatar-inner">🌿</div>
+      </div>
+      <div class="floating-tag tag-1">
+        <span class="tag-dot dot-mint"></span>AI-integratie
+      </div>
+      <div class="floating-tag tag-2">
+        <span class="tag-dot dot-brown"></span>Frontend Design
+      </div>
+      <div class="floating-tag tag-3">
+        <span class="tag-dot dot-mint"></span>Publiek Spreken
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about" style="max-width:1200px;margin:0 auto;">
+    <div class="about-sticky">
+      <p class="section-label">Over mij</p>
+      <h2 class="section-title">Wie is<br />Daan?</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">5+</div>
+          <div class="stat-label">Jaar werkervaring</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Talen</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Actieve projecten</div>
+        </div>
+      </div>
+
+      <div class="lang-pills" style="margin-top:2rem;">
+        <div class="lang-pill">
+          <!-- Netherlands -->
+          <img class="lang-flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/960px-Flag_of_the_Netherlands.svg.png?20100406171959" alt="Vlag van Nederland" />
+          Nederlands
+        </div>
+        <div class="lang-pill">
+          <!-- United Kingdom -->
+          <img class="lang-flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Flag_of_the_United_Kingdom_%283-2%29.svg/960px-Flag_of_the_United_Kingdom_%283-2%29.svg.png?20121229004425" alt="Vlag van het Verenigd Koninkrijk" />
+          Engels
+        </div>
+        <div class="lang-pill">
+          <!-- Germany -->
+          <img class="lang-flag" src="https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg" alt="Vlag van Duitsland" />
+          Duits
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p class="about-text">
+        Hoi, ik ben <strong>Daan Koelewijn</strong> — een HBO IT-student aan De Haagse Hogeschool
+        met een passie voor het bouwen van slimme, gebruiksvriendelijke digitale oplossingen.
+        Naast mijn studie werk ik als verkoper en Smartbar-medewerker bij MediaMarkt,
+        en loop ik stage bij Interforce Networks.
+      </p>
+      <p class="about-text">
+        Mijn brede achtergrond — van zorg tot retail tot IT — geeft me een uniek perspectief
+        op hoe technologie écht voor mensen kan werken. Ik geloof in technologie die
+        <strong>aansluit bij de mens</strong>, niet andersom.
+      </p>
+
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills" style="max-width:1200px;margin:0 auto;">
+    <p class="section-label">Vaardigheden</p>
+    <h2 class="section-title">Wat ik meebring</h2>
+    <div class="skills-grid">
+      <div class="skill-card" data-skill="90">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-name">AI & API-integratie</div>
+        <div class="skill-desc">Verbinden van AI-modellen en externe API's met applicaties. Van prompt-engineering tot werkende integraties.</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="90"></div></div>
+      </div>
+      <div class="skill-card" data-skill="85">
+        <div class="skill-icon">🎨</div>
+        <div class="skill-name">Frontend Design</div>
+        <div class="skill-desc">Het bouwen van mooie, responsive interfaces. Oog voor detail, kleur en gebruikerservaring.</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="85"></div></div>
+      </div>
+      <div class="skill-card" data-skill="80">
+        <div class="skill-icon">🎙️</div>
+        <div class="skill-name">Publiek Spreken</div>
+        <div class="skill-desc">Ideeën helder overbrengen — of het nu een presentatie, pitch of groepsgesprek is.</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" data-width="80"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" style="max-width:1200px;margin:0 auto;">
+    <p class="section-label">Werkervaring</p>
+    <h2 class="section-title">Mijn carrièrepad</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card" onclick="toggleExpand(this)">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Stagiair App Ontwikkeling</div>
+              <div class="timeline-company">Interforce Networks</div>
+            </div>
+            <span class="timeline-period">2026 – heden</span>
+          </div>
+          <div class="expand-arrow">↓ klik voor meer</div>
+          <div class="timeline-expand">
+            <p>Als stagiair bij Interforce Networks werk ik aan de doorontwikkeling van hun klanten app en zoek ik actief naar nieuwe mogelijkheden voor de app.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card" onclick="toggleExpand(this)">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Verkoper & Smartbar Medewerker</div>
+              <div class="timeline-company">MediaMarkt</div>
+            </div>
+            <span class="timeline-period">2023 – heden</span>
+          </div>
+          <div class="expand-arrow">↓ klik voor meer</div>
+          <div class="timeline-expand">
+            <p>Klanten adviseren over technische producten en oplossingen bieden bij de Smartbar. Combineer technische kennis met commerciële vaardigheden en klantgericht denken in een dynamische retail-omgeving.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card" onclick="toggleExpand(this)">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Administratief Medewerker</div>
+              <div class="timeline-company">Activite</div>
+            </div>
+            <span class="timeline-period">2023 – 2023</span>
+          </div>
+          <div class="expand-arrow">↓ klik voor meer</div>
+          <div class="timeline-expand">
+            <p>Administratieve ondersteuning, verwerking van gegevens, vriendelijk en empathisch werken met cliënten.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card" onclick="toggleExpand(this)">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Verkoper</div>
+              <div class="timeline-company">BCC</div>
+            </div>
+            <span class="timeline-period">2022 – 2023</span>
+          </div>
+          <div class="expand-arrow">↓ klik voor meer</div>
+          <div class="timeline-expand">
+            <p>Consumentenelektronica verkopen en klanten adviseren. Opbouwen van productkennis en verkoopvaardigheden in een technische retailomgeving.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--brown);box-shadow:0 0 0 3px var(--brown-light);"></div>
+        <div class="timeline-card" onclick="toggleExpand(this)">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Huiskamer Medewerker</div>
+              <div class="timeline-company">ZorgTalent</div>
+            </div>
+            <span class="timeline-period">2017 – 2023</span>
+          </div>
+          <div class="expand-arrow">↓ klik voor meer</div>
+          <div class="timeline-expand">
+            <p>Begeleiding en ondersteuning van cliënten in een huiskameromgeving. Zes jaar lang empathisch en betrouwbaar werken — een fundament van mensgericht denken dat ik meeneem in alles wat ik doe.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EDUCATION -->
+  <section id="education" style="max-width:1200px;margin:0 auto;">
+    <p class="section-label">Opleiding</p>
+    <h2 class="section-title">Mijn leerpad</h2>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="edu-degree">HBO IT — Innovative Development</div>
+        <div class="edu-school">De Haagse Hogeschool</div>
+        <div class="edu-period">2023 – heden</div>
+        <span class="edu-badge completed">✓ Propedeuse behaald</span>
+      </div>
+      <div class="edu-card">
+        <div class="edu-degree">HBO Social Work</div>
+        <div class="edu-school">Hogeschool Leiden</div>
+        <div class="edu-period">2022 – 2022</div>
+        <span class="edu-badge">Niet afgerond</span>
+      </div>
+      <div class="edu-card">
+        <div class="edu-degree">HAVO</div>
+        <div class="edu-school">Ashram College</div>
+        <div class="edu-period">– 2022</div>
+        <span class="edu-badge completed">✓ Diploma behaald</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MODAL OVERLAY -->
+  <div id="modal-overlay" onclick="closeModal()">
+    <div id="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-thumb"></div>
+      <div class="modal-body">
+        <p id="modal-label" class="section-label"></p>
+        <h3 id="modal-title" class="modal-title"></h3>
+        <p id="modal-sub" class="modal-sub"></p>
+        <div id="modal-tags" class="project-tags" style="margin-bottom:1.5rem;"></div>
+        <div id="modal-desc" class="modal-desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section id="projects" style="max-width:1200px;margin:0 auto;">
+    <p class="section-label">Projecten</p>
+    <h2 class="section-title">Wat ik bouw</h2>
+    <div class="projects-grid">
+
+      <div class="project-card" onclick="openModal('pantrypal')">
+        <div class="project-thumb thumb-pantry">🧊</div>
+        <div class="project-body">
+          <h3 class="project-title">PantryPal</h3>
+          <p class="project-sub">AI-powered koelkastbeheer</p>
+          <div class="project-tags">
+            <span class="project-tag">Arduino</span>
+            <span class="project-tag">SQL</span>
+            <span class="project-tag">Python</span>
+          </div>
+          <p class="project-more">→ Klik voor meer info</p>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="openModal('digimech')">
+        <div class="project-thumb thumb-dm">⚙️</div>
+        <div class="project-body">
+          <h3 class="project-title">Digital Mechanics Platform</h3>
+          <p class="project-sub">Digitaal platform voor vrachtwagen beheer</p>
+          <div class="project-tags">
+            <span class="project-tag">Frontend Development</span>
+            <span class="project-tag">Web</span>
+            <span class="project-tag">UX</span>
+            <span class="project-tag">AI</span>
+            <span class="project-tag">Hosting</span>
+          </div>
+          <p class="project-more">→ Klik voor meer info</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div style="max-width:1200px;margin:0 auto;padding:0 3rem;">
+    <section id="contact">
+      <p class="section-label">Contact</p>
+      <h2 class="contact-title">Laten we iets<br />bouwen samen</h2>
+      <p class="contact-sub">Heb je een vraag, samenwerking of gewoon een goed idee? Ik hoor het graag.</p>
+      <div class="contact-icons">
+        <a href="/cdn-cgi/l/email-protection#325655581c595d575e57455b585c19415b465772555f535b5e1c515d5f" class="contact-btn">
+          📧 E-mail
+        </a>
+        <a href="https://linkedin.com" target="_blank" class="contact-btn">
+          💼 LinkedIn
+        </a>
+        <a href="https://github.com" target="_blank" class="contact-btn">
+          🐙 GitHub
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2026 Daan Koelewijn.</p>
+  </footer>
+
+ <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Scroll progress bar
+    const progress = document.getElementById('progress');
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      progress.style.width = (scrolled / maxScroll * 100) + '%';
+      navbar.classList.toggle('scrolled', scrolled > 20);
+    });
+
+    // Expand timeline items
+    function toggleExpand(card) {
+      const expand = card.querySelector('.timeline-expand');
+      const arrow  = card.querySelector('.expand-arrow');
+      const isOpen = expand.classList.contains('open');
+      expand.classList.toggle('open');
+      arrow.textContent = isOpen ? '↓ klik voor meer' : '↑ klik om te sluiten';
+    }
+
+    // Animate skill bars on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bar = entry.target.querySelector('.skill-bar');
+          if (bar) bar.style.width = bar.dataset.width + '%';
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.skill-card').forEach(c => observer.observe(c));
+
+    // Animate timeline items
+    const tlObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        }
+      })    });
+
+    document.querySelectorAll('.timeline-item').forEach(el => tlObserver.observe(el));
+
+    // ─── PROJECT MODAL ───
+    const projects = {
+      pantrypal: {
+        emoji: '🧊',
+        thumbClass: 'thumb-pantry',
+        label: 'Project 01',
+        title: 'Smart Fridge: PantryPal',
+        sub: 'Health-focussed koelkastbeheer',
+        tags: ['Python', 'SQL', 'Arduino', 'Frontend'],
+        desc: `Mijn eerste grote project — en meteen eentje om trots op te zijn.
+
+PantryPal is een slimme koelkast die producten scant op het moment dat ze uit de koelkast worden gehaald. De voedingswaarden worden vervolgens automatisch gekoppeld aan de juiste persoon, zodat consumptie en gezondheid goed op pijl blijven. Een mooie mix van hardware en software die écht iets betekent in het dagelijks leven.
+
+Mijn rollen:
+— Python development
+— Frontend
+— Arduino code & integratie in Python
+— SQL integratie in Python
+— Hardware
+— Projectleiderschap
+— Presentatie`
+      },
+      digimech: {
+        emoji: '⚙️',
+        thumbClass: 'thumb-dm',
+        label: 'Project 02',
+        title: 'Digital Mechanics Platform',
+        sub: 'Digitaal platform voor monteurs',
+        tags: ['Platform', 'Web', 'UX'],
+        desc: `begin 2024, toen opdrachtgever Wim een zorgwekkend probleem aan het licht bracht: retrofit camerasystemen op vrachtwagens werden geïnstalleerd zonder enige vorm van controle of traceerbaarheid. Wie had er aan het voertuig gewerkt? Was het systeem correct gemonteerd? Niemand wist het — en dat leverde serieuze veiligheidsrisico's op voor het verkeer.
+Samen met het projectteam ontwikkelde ik het Digital Mechanics Platform: een werkzaamhedenlog gecombineerd met AI-gestuurde hulp- en educatietools speciaal voor monteurs. Het platform geeft inzicht in wie wat heeft gedaan, wanneer, en hoe — en ondersteunt monteurs actief met slimme begeleiding tijdens hun werk.
+Wat begon als een schoolproject groeide uit tot iets veel groters. De industrie — zowel in Nederland als daarbuiten — toonde grote interesse. De RDW en de Europese Unie zijn door dit project alert geworden op de gaten in de huidige regelgeving rondom camerasystemen op grote voertuigen. Verandering op beleidsniveau is in gang gezet.
+DMP is bovendien het eerste project in de geschiedenis van de ID-opleiding aan De Haagse Hogeschool dat drie semesters lang heeft mogen draaien — een erkenning voor de impact en relevantie van het werk.
+Mijn rollen: Frontend & JavaScript development in Next.js — Frontend design — Veldtesten & onderzoek — AI-integratie & prompt engineering — Web hosting`
+      }
+    };
+
+    function openModal(id) {
+      const p = projects[id];
+      const thumb = document.getElementById('modal-thumb');
+      thumb.className = 'project-thumb ' + p.thumbClass;
+      thumb.textContent = p.emoji;
+      document.getElementById('modal-label').textContent = p.label;
+      document.getElementById('modal-title').textContent = p.title;
+      document.getElementById('modal-sub').textContent = p.sub;
+      document.getElementById('modal-desc').textContent = p.desc;
+      const tagsEl = document.getElementById('modal-tags');
+      tagsEl.innerHTML = p.tags.map(t => `<span class="project-tag">${t}</span>`).join('');
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  </script>
+</body>
+</html>

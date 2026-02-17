@@ -457,7 +457,7 @@
 
     /* ─── PROJECTS ─── */
     #projects { }
-    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
     .project-card {
       background: var(--white);
       border-radius: 28px;
@@ -475,6 +475,7 @@
       position: relative;
       overflow: hidden;
     }
+    .thumb-zoetermeer { background: linear-gradient(135deg, #d4e8f0, #e8f4d4); }
     .thumb-pantry { background: linear-gradient(135deg, var(--mint-light), var(--mint-pale)); }
     .thumb-dm    { background: linear-gradient(135deg, var(--brown-pale), var(--brown-light)); }
     .project-body { padding: 2rem; }
@@ -668,12 +669,13 @@
       #about { grid-template-columns: 1fr; }
       .about-sticky { position: static; }
       .skills-grid { grid-template-columns: 1fr 1fr; }
-      .projects-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr 1fr; }
       nav { padding: 1rem 1.5rem; }
       .nav-links { gap: 1.5rem; }
     }
     @media (max-width: 600px) {
       .skills-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr; }
       section { padding: 5rem 1.5rem; }
     }
@@ -750,7 +752,7 @@
           <div class="stat-label">Talen</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">2</div>
+          <div class="stat-number">3</div>
           <div class="stat-label">Actieve projecten</div>
         </div>
       </div>
@@ -796,7 +798,7 @@
   <!-- SKILLS -->
   <section id="skills" style="max-width:1200px;margin:0 auto;">
     <p class="section-label">Vaardigheden</p>
-    <h2 class="section-title">Wat ik meebring</h2>
+    <h2 class="section-title">Wat ik meebreng</h2>
     <div class="skills-grid">
       <div class="skill-card" data-skill="90">
         <div class="skill-icon">🤖</div>
@@ -997,6 +999,21 @@
         </div>
       </div>
 
+      <div class="project-card" onclick="openModal('zoetermeer')">
+        <div class="project-thumb thumb-zoetermeer">🏙️</div>
+        <div class="project-body">
+          <h3 class="project-title">Wandeladvies DIP</h3>
+          <p class="project-sub">Adviesopdracht voor Gemeente Zoetermeer</p>
+          <div class="project-tags">
+            <span class="project-tag">Onderzoek</span>
+            <span class="project-tag">Adviesrapport</span>
+            <span class="project-tag">Evenement</span>
+            <span class="project-tag">Gemeente</span>
+          </div>
+          <p class="project-more">→ Klik voor meer info</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1010,10 +1027,10 @@
         <a href="/cdn-cgi/l/email-protection#325655581c595d575e57455b585c19415b465772555f535b5e1c515d5f" class="contact-btn">
           📧 E-mail
         </a>
-        <a href="https://linkedin.com" target="_blank" class="contact-btn">
+        <a href="https://linkedin.com/dgjkoelewijn" target="_blank" class="contact-btn">
           💼 LinkedIn
         </a>
-        <a href="https://github.com" target="_blank" class="contact-btn">
+        <a href="https://github.com/daankoelewijn" target="_blank" class="contact-btn">
           🐙 GitHub
         </a>
       </div>
@@ -1068,6 +1085,25 @@
 
     // ─── PROJECT MODAL ───
     const projects = {
+      zoetermeer: {
+        emoji: '🏙️',
+        thumbClass: 'thumb-zoetermeer',
+        label: 'Project 03',
+        title: 'Wandeladvies Dutch Innovation Park',
+        sub: 'Adviesopdracht voor Gemeente Zoetermeer',
+        tags: ['Onderzoek', 'Adviesrapport', 'Evenement', 'Gemeente'],
+        desc: `In opdracht van Gemeente Zoetermeer ontwikkelden wij als team van vijf HBO-ICT studenten een concept om wandelen op het Dutch Innovation Park te bevorderen — en dat concept werd werkelijkheid.
+
+Op basis van doelgroepinterviews en een brainstormsessie brachten we in kaart waarom werknemers en studenten de bestaande wandelroutes niet gebruikten: onbekendheid, geen bewegwijzering, gebrek aan rustpunten en weinig sociale prikkel. Dat inzicht vormde de basis voor ons advies én voor een concreet evenement.
+
+We organiseerden een "weeting" — een walking meeting — waarbij deelnemers samen een lunchommetje liepen langs het Van Tuyllpark. Met gespreksvragen op zak en de opdracht: loop met iemand die je nog niet kent. Het evenement sloeg aan en is inmiddels een terugkerend initiatief geworden.
+
+Mijn rollen:
+— Ontwerp van posters & promotiemateriaal
+— Regelen van voedselpakketten voor deelnemers
+— Doelgroeponderzoek & interviews
+— Adviesrapportage & presentatie aan opdrachtgever`
+      },
       pantrypal: {
         emoji: '🧊',
         thumbClass: 'thumb-pantry',
